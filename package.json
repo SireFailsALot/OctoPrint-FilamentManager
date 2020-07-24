@@ -5,7 +5,7 @@
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/malnvenshorn/OctoPrint-FilamentManager.git"
+    "url": "https://github.com/SireFailsALot/OctoPrint-FilamentManager.git"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -16,13 +16,13 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.5.1",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-babel": "^7.0.0",
     "gulp-clean-css": "^3.9.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^4.0.0"
   },
   "dependencies": {
-
+    "npx": "^10.2.2"
   }
 }

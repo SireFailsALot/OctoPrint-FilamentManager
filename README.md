@@ -16,13 +16,12 @@ If you have questions or encounter issues please take a look at the [Frequently 
 ## Setup
 
 1. Install this plugin via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
-or manually using this URL:
+   or manually using this URL:
 
-    `https://github.com/malnvenshorn/OctoPrint-FilamentManager/archive/master.zip`
+   `https://github.com/SireFailsALot/OctoPrint-FilamentManager/archive/master.zip`
+2. For PostgreSQL support you need to install an additional dependency:
 
-1. For PostgreSQL support you need to install an additional dependency:
-
-    `pip install psycopg2`
+   `pip install psycopg2`
 
 ## Screenshots
 

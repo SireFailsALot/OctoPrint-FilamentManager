@@ -4,14 +4,6 @@ var eslint = require('gulp-eslint');
 var babel = require('gulp-babel');
 let cleanCSS = require('gulp-clean-css');
 
-gulp.task('lint', () => {
-    return gulp.src(['static/js/**/*.js'])
-        .pipe(eslint())
-        .pipe(eslint.format());
-});
-
-gulp.task('build', ['js', 'css'])
-
 gulp.task('js', () => {
 	return gulp.src([
 			'static/js/constructor.js',
@@ -34,3 +26,11 @@ gulp.task('css', () => {
     .pipe(cleanCSS())
     .pipe(gulp.dest('octoprint_filamentmanager/static/css/'));
 });
+
+gulp.task('lint', () => {
+    return gulp.src(['static/js/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format());
+});
+
+gulp.task('build', gulp.series('js', 'css'))
