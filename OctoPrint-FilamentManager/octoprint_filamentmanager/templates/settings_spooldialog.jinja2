@@ -1,0 +1,91 @@
+<div id="settings_plugin_filamentmanager_spooldialog" class="modal hide fade">
+
+    <div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
+        <h3>{{ _('Filament Spool') }} <i class="fa fa-spinner" data-bind="visible: viewModels.spools.requestInProgress(), css: {'fa-spin': viewModels.spools.requestInProgress()}"></i></h3>
+    </div>
+
+    <div class="modal-body">
+
+        <form class="form-horizontal">
+
+            <!-- name -->
+
+            <div class="control-group" data-bind="css: {error: viewModels.spools.nameInvalid()}">
+                <label class="control-label">{{ _('Name') }}</label>
+                <div class="controls">
+                    <input type="text" data-bind="value: viewModels.spools.loadedSpool.name, valueUpdate: 'afterkeydown'">
+                    <span data-bind="visible: viewModels.spools.nameInvalid()">
+                        <br><span class="help-inline">{{ _("Name must be set") }}</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- profile -->
+
+            <div class="control-group">
+                <label class="control-label">{{ _('Profile') }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <select data-bind="options: viewModels.profiles.allProfiles, optionsText: function(item) { return item.material + ' (' + item.vendor + ')'; }, optionsValue: function(item) { return item.id; }, value: viewModels.spools.loadedSpool.profile"></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- price -->
+
+            <div class="control-group">
+                <label class="control-label">{{ _('Price') }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="number" step="0.01" min="0" class="input-mini text-right" data-bind="value: viewModels.spools.loadedSpool.cost">
+                        <span class="add-on" data-bind="text: viewModels.config.config.currencySymbol"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- weight -->
+
+            <div class="control-group">
+                <label class="control-label">{{ _('Weight') }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="number" step="1" min="0" class="input-mini text-right" data-bind="value: viewModels.spools.loadedSpool.totalWeight">
+                        <span class="add-on">g</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- remaining -->
+
+            <div class="control-group">
+                <label class="control-label">{{ _('Remaining') }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="number" step="1" min="0" class="input-mini text-right" data-bind="value: viewModels.spools.loadedSpool.remaining">
+                        <span class="add-on">g</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- temperature offset -->
+
+            <div class="control-group">
+                <label class="control-label">{{ _('Temperature offset') }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="number" step="1" class="input-mini text-right" data-bind="value: viewModels.spools.loadedSpool.temp_offset">
+                        <span class="add-on">°C</span>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _('Cancel') }}</button>
+        <button class="btn btn-primary" data-bind="disable: viewModels.spools.nameInvalid(), click: function() { viewModels.spools.saveSpool(viewModels.spools.toSpoolData()); }">{{ _('Save') }}</button>
+    </div>
+
+</div>

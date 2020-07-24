@@ -1,0 +1,14 @@
+<!-- ko foreach: viewModels.selections.tools -->
+<div class="control-group">
+   <div class="controls form-inline">
+       <label class="control-label">{{ _('Tool') }} <span data-bind="text: $index"></span></label>&nbsp;
+       <select data-bind="enable: !$root.core.bridge.allViewModels.printerStateViewModel.isPrinting() && $root.core.bridge.allViewModels.loginStateViewModel.isUser(), options: $root.viewModels.spools.allSpools.items, optionsText: function(item) { return item.name + ' ' + (item.weight - item.used).toFixed(0) + 'g - ' + item.profile.material + ' (' + item.profile.vendor + ')'; }, optionsValue: function(item) { return item.id; }, optionsCaption: '{{ _('--- Select Spool ---') }}', value: $root.viewModels.selections.tools()[$index()], event: { change: function() { $root.viewModels.selections.updateSelectedSpool($index(), $root.viewModels.selections.tools()[$index()]()); } }"></select>
+       <!-- Added the ability to display profile notes in the side bar--SFAL -->
+       <div>Profile Notes</div>
+       <label class="control-label">
+            <textarea class="non-editable-text" readonly data-bind="text: $root.viewModels.selections.getProfileNotes($index())">
+            </textarea>
+        </label>
+   </div>
+</div>
+<!-- /ko -->
