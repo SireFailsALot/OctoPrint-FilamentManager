@@ -13,11 +13,21 @@ from datetime import datetime
 from flask import jsonify, request, make_response, Response
 from werkzeug.exceptions import BadRequest
 
+# Removed dependency on the depreciated admin_permision and reaplaced all occurances
+# with Permissions.ADMIN However, it should fail to import, we will fall back onto it. --SFAL
+
 import octoprint.plugin
 from octoprint.settings import valid_boolean_trues
-from octoprint.server import admin_permission
+try:
+    from octoprint.access.permissions import Permissions
+    admin_permission = Permissions.ADMIN
+except ImportError:
+    print("Critical import exception occurred. --SFAL")
+    from octoprint.server import admin_permission
+
 from octoprint.server.util.flask import restricted_access, check_lastmodified, check_etag
 from octoprint.util import dict_merge
+import io
 
 from .util import *
 
@@ -322,7 +332,8 @@ class FilamentManagerApi(octoprint.plugin.BlueprintPlugin):
         archive_name = "filament_export_{timestamp}.zip".format(timestamp=timestamp)
 
         def file_generator():
-            with open(archive_path) as f:
+            # If we do not include encoding, open breaks. Using io.open for python 2.7 compatability --SFAL
+            with io.open(archive_path, encoding = "utf-8") as f:
                 for c in f:
                     yield c
             try:

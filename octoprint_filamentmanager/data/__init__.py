@@ -11,15 +11,14 @@ from multiprocessing import Lock
 from backports import csv
 from uritools import urisplit
 from sqlalchemy.engine.url import URL
-from sqlalchemy import create_engine, event, text
+from sqlalchemy import create_engine, event, text, select, exc
 from sqlalchemy.schema import MetaData, Table, Column, ForeignKeyConstraint, DDL, PrimaryKeyConstraint
 from sqlalchemy.sql import insert, update, delete, select, label
-from sqlalchemy.types import INTEGER, VARCHAR, REAL, TIMESTAMP
+from sqlalchemy.types import INTEGER, VARCHAR, REAL, TIMESTAMP, TEXT
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 import sqlalchemy.sql.functions as func
 
 from .listen import PGNotify
-
 
 class FilamentManager(object):
 
@@ -57,8 +56,10 @@ class FilamentManager(object):
                       port=uri_parts.getport(default=5432),
                       database=database,
                       username=username,
-                      password=password)
-            engine = create_engine(uri)
+                      password=password
+                    )
+            # Added pool_pre_ping --SFAL
+            engine = create_engine(uri, pool_pre_ping=True)
         else:
             raise ValueError("Engine '{engine}' not supported".format(engine=uri_parts.scheme))
 
@@ -72,14 +73,14 @@ class FilamentManager(object):
 
     def initialize(self):
         metadata = MetaData()
-
+        # Added notes section to profile and spools
         self.profiles = Table("profiles", metadata,
                               Column("id", INTEGER, primary_key=True, autoincrement=True),
                               Column("vendor", VARCHAR(255), nullable=False, server_default=""),
                               Column("material", VARCHAR(255), nullable=False, server_default=""),
                               Column("density", REAL, nullable=False, server_default="0"),
-                              Column("diameter", REAL, nullable=False, server_default="0"))
-
+                              Column("diameter", REAL, nullable=False, server_default="0"),
+                              Column("profile_notes", TEXT, nullable=False, server_default=""))
         self.spools = Table("spools", metadata,
                             Column("id", INTEGER, primary_key=True, autoincrement=True),
                             Column("profile_id", INTEGER, nullable=False),
@@ -159,8 +160,11 @@ class FilamentManager(object):
 
     def execute_script(self, script):
         with self.lock, self.conn.begin():
+            # if the string is empty, skip.
             for stmt in script.split(";"):
-                self.conn.execute(text(stmt))
+                if (not stmt or stmt.isspace()):
+                    continue
+                self.conn.execute(stmt)
 
     # versioning
 
@@ -203,10 +207,11 @@ class FilamentManager(object):
         return data
 
     def update_profile(self, identifier, data):
+        # Added Profile Notes --SFAL
         with self.lock, self.conn.begin():
             stmt = update(self.profiles).where(self.profiles.c.id == identifier)\
                 .values(vendor=data["vendor"], material=data["material"], density=data["density"],
-                        diameter=data["diameter"])
+                        diameter=data["diameter"], profile_notes=data["profile_notes"])
             self.conn.execute(stmt)
         return data
 
@@ -372,3 +377,4 @@ class FilamentManager(object):
             return dict(row) if row is not None else None
         else:
             return [dict(row) for row in result.fetchall()]
+
